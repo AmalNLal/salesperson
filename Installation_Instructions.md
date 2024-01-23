@@ -29,7 +29,7 @@ Make sure you have C compiler installed.
 
 Compile concorde - make sure you are in concorde folder
 ```
-export CFLAGS="-g -O3 -arch x86_64"
+export CFLAGS="-g -O3"
 ./configure --with-qsopt= /home/full/path/to/concorde/QSOPT
 make
 ```
