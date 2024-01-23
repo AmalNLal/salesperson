@@ -13,27 +13,32 @@ chmod +x ./install.sh
 Solvers won't be installed as the source repo (repo that contains the solver files) are private, and we also don't need all of the solvers.
 
 ## Concorde & LK Algorithms
-Download the Concorde Files [Concorde-03.12.19](https://www.math.uwaterloo.ca/tsp/concorde/downloads/codes/src/co031219.tgz)
+### Step 1
+Download the Concorde Files from: [Concorde-03.12.19](https://www.math.uwaterloo.ca/tsp/concorde/downloads/codes/src/co031219.tgz)
+### Step 2
 ```
-cd <folder containing concorde file(prefered if it's in the same folder as salesperson)>
+cd <folder containing the downloaded concorde file(prefered if it's in the same folder as salesperson)>
 gunzip co031219.tgz
 tar xvf co031219.tar
 cd concorde
 mkdir QSOPT
 ```
-Download Linear Programming solver [qsopt](https://www.math.uwaterloo.ca/~bico/qsopt/downloads/downloads.htm) download all files under MacOS or ubuntu.
+### Step 3
+Download Linear Programming solver from : [qsopt](https://www.math.uwaterloo.ca/~bico/qsopt/downloads/downloads.htm) download all files under MacOS or ubuntu.
 Store all the qsopt files inside QSOPT folder.
 
+### Step 4
 Make sure you have C compiler installed.
 `gcc --version`
 
+### Step 5
 Compile concorde - make sure you are in concorde folder
 ```
 export CFLAGS="-g -O3"
 ./configure --with-qsopt= /home/full/path/to/concorde/QSOPT
 make
 ```
-
+### Step 6
 Now, copy the linkern executable file from newly created LINKERN folder and paste it in the newly created TSP. Now we have both concorde and linkern executables in the same folder.
 
 ## Testing with R code
