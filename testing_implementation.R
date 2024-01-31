@@ -14,5 +14,9 @@ getwd()
 solutionlk <- solve_TSP(testing.distance_matix, method = "linkern")
 solutionconcorde <- solve_TSP(testing.distance_matix, method = "concorde")
 
+#write_TSPLIB(as.TOUR(solutionconcorde), "home/Desktop/R_Seminar/test_output_file.sol")
 
-write_TSPLIB(as.TOUR(solutionconcorde), "home/Desktop/R_Seminar/test_output_file.sol")
+for (i in 1:5 ){
+  solutionlk <- solve_TSP("../dataset/d2103.tsp", method = "linkern")
+  tour_length(solutionlk)
+}

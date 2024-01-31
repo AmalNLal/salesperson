@@ -4,8 +4,7 @@
 \alias{getNNGFeatureSet}
 \title{Feature: statistics of the nearest neighbour graph}
 \usage{
-getNNGFeatureSet(x, ks = NULL, include.costs = FALSE,
-  normalize = FALSE, ...)
+getNNGFeatureSet(x, ks = NULL, include.costs = FALSE, normalize = FALSE, ...)
 }
 \arguments{
 \item{x}{[\code{Network}]\cr

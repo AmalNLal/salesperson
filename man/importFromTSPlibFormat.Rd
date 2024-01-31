@@ -4,8 +4,12 @@
 \alias{importFromTSPlibFormat}
 \title{Import network from (extended) TSPlib format.}
 \usage{
-importFromTSPlibFormat(filename, round.distances = TRUE,
-  read.opt = TRUE, get.distances = TRUE)
+importFromTSPlibFormat(
+  filename,
+  round.distances = TRUE,
+  read.opt = TRUE,
+  get.distances = TRUE
+)
 }
 \arguments{
 \item{filename}{[\code{character(1)}]\cr
