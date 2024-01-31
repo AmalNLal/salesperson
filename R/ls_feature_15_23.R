@@ -1,3 +1,26 @@
+#' Compute features for the TSP instance using linkern algorithm. from feat: 15-23
+#'
+#' This function combines multiple features computed using linkern algorithm for a TSP instance.
+#' @name ls_feature_15_23
+#' @param solver_path
+#'   Path to the Linkern algorithm executable.
+#'
+#' @param instance_path
+#'   Path to the TSP instance file.
+#'
+#' @return
+#'   A vector containing computed features.
+#'
+#' @examples
+#' \dontrun{
+#'   bc_features("/path/to/linkern", "/path/to/tsp_instance")
+#' }
+#'
+#' @export
+
+
+
+
 # Load necessary library for skewness
 library(e1071)
 library(TSP)
@@ -20,10 +43,16 @@ calculate_stats <- function(arr) {
   return(c(mean_value, cv_value, skew_value))
 }
 
-getTourCost <- function(dataset_path) {
-  solutionlk <- solve_TSP(dataset_path, method = "linkern")
+getTourCost <- function(dataset_path, solver_path) {
+  
+  instance <- read_TSPLIB(dataset_path)
+  instance.distance_matix<- TSP(dist(instance))
+  
+  concorde_path(solver_path)
+  solutionlk <- solve_TSP(instance.distance_matix, method = "linkern")
   return(tour_length(solutionlk))
 }
+
 
 getMinTourLength <- function(dataset_path, linkern_path) {
   results <- system2(linkern_path, args = c(dataset_path), stdout = TRUE, stderr=TRUE)
@@ -36,9 +65,10 @@ getMinTourLength <- function(dataset_path, linkern_path) {
   return(local_min_tour)
 }
 
+
 getImpPerStep <- function(dataset_path, linkern_path) {
   results <- system2(linkern_path, args = c(dataset_path), stdout = TRUE, stderr=TRUE)
-  results
+  #results
   steps <- NULL
   costs <- NULL
   best_sol <- NULL
@@ -61,15 +91,17 @@ getImpPerStep <- function(dataset_path, linkern_path) {
   return(imp_per_step)
 }
 
-feature_15_23<-function(dataset_path,linkern_path){
+
+ls_feature_15_23<-function(solver_path, instance_path){
   tour_costs<-c()
   min_tour_lengths<-c()
   impPerStep<-c()
+  linkern_path <- paste(solver_path,"/linkern", sep = "")
   for (i in 1:20){
     # Call the function and store the result
-    tour_costs <- c(tour_costs, getTourCost(dataset_path))
-    min_tour_lengths <- c(min_tour_lengths, getMinTourLength(dataset_path,linkern_path))
-    impPerStep <- c(impPerStep, getImpPerStep(dataset_path,linkern_path))
+    tour_costs <- c(tour_costs, getTourCost(instance_path, solver_path))
+    min_tour_lengths <- c(min_tour_lengths, getMinTourLength(instance_path,linkern_path))
+    impPerStep <- c(impPerStep, getImpPerStep(instance_path,linkern_path))
   }
   feature_15_17<-calculate_stats(tour_costs)
   feature_18_20<-calculate_stats(min_tour_lengths)
@@ -77,11 +109,4 @@ feature_15_23<-function(dataset_path,linkern_path){
   
   return(c(feature_15_17,feature_18_20,feature_21_23))
 }
-dataset_path <- "/home/ajayum/Documents/seminar/ALL_tsp/a280.tsp"
-linkern_path <- "/home/ajayum/Documents/seminar/concorde/TSP/linkern"
-con_path <- "/home/ajayum/Documents/seminar/concorde/TSP"
-concorde_path(con_path)
 
-getTourCost(dataset_path)
-
-feature_15_23(dataset_path, linkern_path)
