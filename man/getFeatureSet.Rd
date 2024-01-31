@@ -4,9 +4,14 @@
 \alias{getFeatureSet}
 \title{Feature: all features.}
 \usage{
-getFeatureSet(x, black.list = character(0), include.costs = FALSE,
-  normalize = FALSE, drop.duplicates = TRUE,
-  feature.fun.args = getDefaultFeatureFunArgs())
+getFeatureSet(
+  x,
+  black.list = character(0),
+  include.costs = FALSE,
+  normalize = FALSE,
+  drop.duplicates = TRUE,
+  feature.fun.args = getDefaultFeatureFunArgs()
+)
 }
 \arguments{
 \item{x}{[\code{Network}]\cr
