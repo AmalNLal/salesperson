@@ -44,18 +44,21 @@ calculate_stats <- function(arr) {
 }
 
 getTourCost <- function(dataset_path, solver_path) {
-  
-  instance <- read_TSPLIB(dataset_path)
-  instance.distance_matix<- TSP(dist(instance))
-  
-  concorde_path(solver_path)
-  solutionlk <- solve_TSP(instance.distance_matix, method = "linkern")
-  return(tour_length(solutionlk))
+  print("feat_15_23 > getTourCost")
+  # instance <- read_TSPLIB(dataset_path)
+  # instance.distance_matix<- TSP(dist(instance))
+  # 
+  # concorde_path(solver_path)
+  # solutionlk <- solve_TSP(instance.distance_matix, method = "linkern")
+  tsp_file_path <-"solution_linkernfeat1.tsp"
+  tsp_data <- read.table(tsp_file_path, header = FALSE, skip = 1, col.names = c("X", "Y", "Distance"))
+  return(sum(tsp_data$Distance))
+  #return(tour_length(solutionlk))
 }
 
 
-getMinTourLength <- function(dataset_path, linkern_path) {
-  results <- system2(linkern_path, args = c(dataset_path), stdout = TRUE, stderr=TRUE)
+getMinTourLength <- function(dataset_path, linkern_path, results) {
+  print("feat_15_23 > getMinTourLength")
   local_min_tour <- NULL
   for (line in results) {
     if (grepl("Best cycle length: (\\d+).*", line)) {
@@ -66,8 +69,9 @@ getMinTourLength <- function(dataset_path, linkern_path) {
 }
 
 
-getImpPerStep <- function(dataset_path, linkern_path) {
-  results <- system2(linkern_path, args = c(dataset_path), stdout = TRUE, stderr=TRUE)
+getImpPerStep <- function(dataset_path, linkern_path,results) {
+  print("feat_15_23 > getImpPerStep")
+  #results <- system2(linkern_path, args = c(dataset_path), stdout = TRUE, stderr=TRUE)
   #results
   steps <- NULL
   costs <- NULL
@@ -99,9 +103,14 @@ ls_feature_15_23<-function(solver_path, instance_path){
   linkern_path <- paste(solver_path,"/linkern", sep = "")
   for (i in 1:20){
     # Call the function and store the result
-    tour_costs <- c(tour_costs, getTourCost(instance_path, solver_path))
-    min_tour_lengths <- c(min_tour_lengths, getMinTourLength(instance_path,linkern_path))
-    impPerStep <- c(impPerStep, getImpPerStep(instance_path,linkern_path))
+    results <- system2(linkern_path, args = c("-R 100","-o solution_linkernfeat1.tsp" ,instance_path), stdout = TRUE, stderr=TRUE)
+    tryCatch({
+      tour_costs <- c(tour_costs, getTourCost(instance_path, solver_path))
+    }, error = function(e){
+      tour_costs <- c(tour_costs, NA)
+    })
+    min_tour_lengths <- c(min_tour_lengths, getMinTourLength(instance_path,linkern_path,results))
+    impPerStep <- c(impPerStep, getImpPerStep(instance_path,linkern_path, results))
   }
   feature_15_17<-calculate_stats(tour_costs)
   feature_18_20<-calculate_stats(min_tour_lengths)
@@ -110,3 +119,4 @@ ls_feature_15_23<-function(solver_path, instance_path){
   return(c(feature_15_17,feature_18_20,feature_21_23))
 }
 
+#ls_feature_15_23("../concorde/TSP", "../dataset/brd14051.tsp")

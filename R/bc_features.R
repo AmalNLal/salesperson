@@ -22,15 +22,24 @@
 
 
 bc_features = function(path_concorde, instance_path){
-  features = c(imp_per_cut_ub_lb_ratio(path_concorde, instance_path), after_probing(path_concorde, instance_path ))
+  print("feat_33_43 > bc_features")
+  tryCatch({
+    imp <- imp_per_cut_ub_lb_ratio(path_concorde, instance_path)
+  },error=function(e){
+    imp <- imp_per_cut_ub_lb_ratio(path_concorde, instance_path, runtime=120)
+    
+  })
+  
+  features = c(imp, after_probing(path_concorde, instance_path ))
   return(features)
 }
 
 #bc_features(path_concorde = "../concorde/TSP/concorde", instance_path = "../dataset/a280.tsp")
 
-imp_per_cut_ub_lb_ratio = function(path_concorde, instance_path, normalize = FALSE){
+imp_per_cut_ub_lb_ratio = function(path_concorde, instance_path, normalize = FALSE, runtime=2){
+  print("feat_33_43 > imp_per_cut_ub_lb_ratio")
   # Based on 2s runs of concorde
-  result <- run.concorde_linkern(solver_path = path_concorde, method = "concorde", instance_path = instance_path, args = "-B -x -v", concorde_runtime = 2)
+  result <- run.concorde_linkern(solver_path = path_concorde, method = "concorde", instance_path = instance_path, args = "-B -x -v", concorde_runtime = runtime)
   #print(result)
   #str(result)
   cuts<-c()
@@ -55,7 +64,9 @@ imp_per_cut_ub_lb_ratio = function(path_concorde, instance_path, normalize = FAL
   #print(lowerbound)
   #print(length(lps))
   #print(length(cuts))
+  
   data <- data.frame(Cuts = cuts, LPs = lps)
+  write.csv(data, file = "concorde_temp.csv", row.names = FALSE)
   if(normalize){
     data <- scale(data)
   }
@@ -78,13 +89,14 @@ imp_per_cut_ub_lb_ratio = function(path_concorde, instance_path, normalize = FAL
 }
 
 after_probing = function(path_concorde, instance_path, delete_temp=FALSE){
+  print("feat_33_43 > after_probing")
   if(file.exists("./tmp")){
     print("tmp folder exists")
   }
   else{
     dir.create("tmp")
   }
-  run.concorde_linkern(solver_path = path_concorde, method = "concorde", instance_path = instance_path, args = "-B -s 123456 -x -X ./tmp/final_sol.lptour")
+  run.concorde_linkern(solver_path = path_concorde, method = "concorde", instance_path = instance_path, args = "-B -s 123456 -x -X ./tmp/final_sol.lptour", concorde_runtime=120)
   #file_contents <- readLines("./tmp/final_sol.lptour")
   #print(file_contents)
   file_data <- na.omit(read.csv("./tmp/final_sol.lptour", header = F, sep=" ", col.names = c("Start","Stop","Dist")))

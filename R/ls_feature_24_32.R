@@ -153,7 +153,8 @@ ls_feature_24_32<-function(solver_path,instance_path){
   results<-c()
   for (i in 1:20){
     # Call the function and store the result
-    result <- system2(solver_path, args = c("-R 100" ,paste("-s",i),"-o ./solution.tsp",instance_path), stdout = TRUE, stderr = TRUE)
+    #result <- system2(solver_path, args = c("-R 100" ,paste("-s",i),"-o ./solution.tsp",instance_path), stdout = TRUE, stderr = TRUE)
+    result <- run.concorde_linkern(solver_path, instance_path, method="linkern" ,args = paste("-R 100 -s",i, "-o solution.tsp"))
     results<-c(results,result)
     
     results_feature_27_29<-c(results_feature_27_29, distance_local_minima("solution.tsp"))
@@ -166,3 +167,5 @@ ls_feature_24_32<-function(solver_path,instance_path){
   return(c(feature_24_26,feature_27_29,feature_30_32))
 }
 #================================================================================
+
+#ls_feature_24_32("/home/aryman/Desktop/R_Seminar/concorde/TSP", "../dataset/a280.tsp")
